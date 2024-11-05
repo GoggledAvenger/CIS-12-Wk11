@@ -1,0 +1,31 @@
+https://github.com/THartmanOfTheRedwoods/PyLab009
+
+catalogue the characters of a book
+
+1. identify the book(s)
+pick long text that is in public domain and download from Gutenberg press project
+
+2. Processing the txt file -
+a. decide how many lines make a page and how many characters make a line
+
+3. Read the book line by line and clean each line
+
+pages = {
+    1. {
+        1: "this is line 1 of page 1"
+        2: "this is line 2 of page 1"
+        ...
+    },
+    2. {
+        1: "this is line 1 of page 2"
+        2: "this is line 2 of page 2"
+        ...
+    }
+    ...
+}
+
+code_book =
+
+    code_book = generate_codebook()
+    save_codebook('codebooks/poem.json', code_book)
+    save_codebook('codebooks/poem_r.json', pages)
