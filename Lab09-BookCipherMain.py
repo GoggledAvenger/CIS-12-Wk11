@@ -1,6 +1,6 @@
 # Main Program of Lab09 - Book Cipher App
 
-import json, os, random
+import json, os, random, re
 
 BOOKS = 3
 LINE = 120
@@ -63,7 +63,7 @@ def generate_codebook():
     return code_book
 
 def save_codebook(file_path, book):
-    with open(file_path, 'w', encoding = 'utf-8') as fp:
+    with open(file_path, 'w', encoding = 'utf-8-sig') as fp:
         json.dump(book, fp, indent=4)
 
 def load(file_path, *key_books, reverse=False):
@@ -89,14 +89,45 @@ def encrypt(codebook, message):
     for char in message:
         index = random.randint(0,len(codebook[char]) - 1)
         cipher_text.append(codebook[char].pop(index))
-    return ''.join(cipher_text)
+    return '-'.join(cipher_text)
+
+def decrypt(rev_codebook, ciphertext):
+    plaintext = []
+    for cc in re.findall(r'\d+-\d+-\d+', ciphertext):
+        page, line, char = cc.split('-')
+        plaintext.append(rev_codebook[page][line][int(char)])
+    return ''.join(plaintext)
+
+def main_menu():
+    print(f"""
+    1) Encrypt
+    2) Decrypt
+    3) Quit
+    """)
+    return int(input(f"Make a selection [1,2,3]\n"))
 
 def main():
     key_books = ('books/completeworksofwilliamshakespeare.txt','books/drjekyllandmrhyde.txt','books/warandpeace.txt')
     code_book_path = 'codebooks/real_deal.json'
     rev_code_book_path = 'codebooks/real_deal_r.json'
-    codebook = load(code_book_path, *key_books)
-    rev_codebook = load(rev_code_book_path, *key_books, reverse=True)
+    while True:
+        try:
+            choice = main_menu()
+            match choice:
+                case 1:
+                    codebook = load(code_book_path, *key_books)
+                    message = input(f"Please enter your secret message:\n")
+                    print(encrypt(codebook,message))
+                    continue
+                case 2:
+                    rev_codebook = load(rev_code_book_path, *key_books, reverse=True)
+                    message = input(f"Please enter your cipher text:\n")
+                    print(decrypt(rev_codebook, message))
+                    continue
+                case 3:
+                    break
+        except ValueError as ve:
+            print(f"Improper Selection.\n")
 
 if __name__ == '__main__':
     main()
